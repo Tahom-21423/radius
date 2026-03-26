@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Mobilitätsvergleich</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      background: #000;
+    }
+
+    #app {
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      height: 100%;
+    }
+
+    #panel {
+      background: #000;
+      color: #fff;
+      border-right: 1px solid #222;
+      padding: 12px;
+      overflow: auto;
+      box-sizing: border-box;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    h2 {
+      margin: 0 0 6px 0;
+      font-size: 24px;
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: 0.1px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #bbb;
+      line-height: 1.35;
+      font-weight: 400;
+    }
+
+    .box {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .wizardQ {
+      font-size: 21px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 4px;
+      letter-spacing: 0.1px;
+    }
+
+    .wizardSub {
+      font-size: 12px;
+      color: #bbb;
+      margin-top: 4px;
+      line-height: 1.3;
+      font-weight: 400;
+      min-height: 14px;
+    }
+
+    .metric {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 0.1px;
+      min-height: 20px;
+    }
+
+    .buttonRow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .timeGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 9px 10px;
+      font-size: 14px;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.1px;
+      border-radius: 10px;
+      border: 1px solid #555;
+      background: #222;
+      color: #fff;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    }
+
+    button.primary {
+      background: #333;
+      font-weight: 900;
+    }
+
+    button.active {
+      outline: 2px solid rgba(255,255,255,0.32);
+      outline-offset: 0;
+      box-shadow: inset 0 0 0 9999px rgba(255,255,255,0.08);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .warn {
+      color: #ff998a;
+      margin-top: 8px;
+      min-height: 1.2em;
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .grey-marker {
+      filter: grayscale(100%) brightness(80%);
+    }
+
+    .tap-flash {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="panel">
+    <h2>Vergleiche Deinen Mobilitätsradius mit früher!</h2>
+
+    <div class="box">
+      <div class="wizardQ" id="prompt">Wo wohnst du? KLICK</div>
+      <div class="wizardSub" id="progress"></div>
+
+      <div class="buttonRow">
+        <button id="back">Zurück</button>
+        <button class="primary" id="restart">Neu starten</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="metric" id="metricMain">— km</div>
+      <div class="small" id="metricSub"></div>
+    </div>
+
+    <div id="compareSection" class="box hidden">
+      <div class="wizardQ" id="compareHeadline">Zeitvergleich</div>
+      <div class="small" id="compareSub">Wähle einen historischen Zeitschnitt.</div>
+
+      <div class="timeGrid">
+        <button class="timeBtn" data-year="1590">1590</button>
+        <button class="timeBtn" data-year="1790">1790</button>
+        <button class="timeBtn" data-year="1890">1890</button>
+        <button class="timeBtn" data-year="1950">1950</button>
+      </div>
+
+      <div class="box" style="margin-top:10px;">
+        <div class="small" id="infoText">Hier Infos zum heutigen Radius...</div>
+      </div>
+
+      <button class="primary" id="nextTopic" style="margin-top:10px;">Weiter zum nächsten Thema</button>
+    </div>
+
+    <div id="doneSection" class="box hidden">
+      <div class="wizardQ">Fertig!</div>
+      <div class="small">Alle Themen wurden durchlaufen. Du kannst neu starten oder links oben mit „Zurück“ den letzten Schritt korrigieren.</div>
+    </div>
+
+    <div class="warn" id="err"></div>
+  </div>
+
+  <div id="map"></div>
+</div>
+
+<script>
+  const WINSEN = { lat: 53.3574, lng: 10.2127 };
+
+  const map = L.map("map", {
+    zoomControl: true
+  }).setView([WINSEN.lat, WINSEN.lng], 12);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap"
+  }).addTo(map);
+
+  const greyIcon = new L.Icon({
+    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+    className: "grey-marker"
+  });
+
+  const topics = [
+    { key: "work",  label: "Arbeit / Schule", ask: "Wo arbeitest du / gehst du zur Schule?" },
+    { key: "daily", label: "Täglicher Bedarf", ask: "Wo kaufst du deinen täglichen Bedarf ein?" },
+    { key: "hobby", label: "Hobby", ask: "Wo gehst du deinem Hobby nach?" },
+    { key: "shop",  label: "Shopping", ask: "Wo shoppst du gerne?" }
+  ];
+
+  const historicRadiusKm = {
+    work:  { 1590: 2,   1790: 8,   1890: 20, 1950: 30 },
+    daily: { 1590: 0.5, 1790: 1.5, 1890: 5,  1950: 10 },
+    hobby: { 1590: 1,   1790: 3,   1890: 8,  1950: 20 },
+    shop:  { 1590: 0.5, 1790: 2,   1890: 10, 1950: 30 }
+  };
+
+  const state = {
+    home: null,
+    points: {
+      work: null,
+      daily: null,
+      hobby: null,
+      shop: null
+    },
+    markers: {
+      home: null,
+      work: null,
+      daily: null,
+      hobby: null,
+      shop: null
+    },
+    currentLine: null,
+    todayCircle: null,
+    historicCircle: null,
+    tapFlash: null,
+    currentTopicIndex: -1,
+    mode: "pickHome",
+    activeYear: null
+  };
+
+  let inactivityTimer = null;
+
+  const TODAY_COLOR = "#9a9a9a";
+  const USER_LINE_COLOR = TODAY_COLOR;
+  const USER_CIRCLE_COLOR = TODAY_COLOR;
+
+  const HIST_COLORS = {
+    "1590": "#8c4b2d",
+    "1790": "#c03d3d",
+    "1890": "#6b3fc9",
+    "1950": "#0b5d1e"
+  };
+
+  const HIST_BG = {
+    "1590": "rgba(140, 75, 45, 0.50)",
+    "1790": "rgba(192, 61, 61, 0.50)",
+    "1890": "rgba(107, 63, 201, 0.50)",
+    "1950": "rgba(11, 93, 30, 0.50)"
+  };
+
+  const promptEl = document.getElementById("prompt");
+  const progressEl = document.getElementById("progress");
+  const metricMainEl = document.getElementById("metricMain");
+  const metricSubEl = document.getElementById("metricSub");
+  const compareSectionEl = document.getElementById("compareSection");
+  const compareHeadlineEl = document.getElementById("compareHeadline");
+  const compareSubEl = document.getElementById("compareSub");
+  const infoTextEl = document.getElementById("infoText");
+  const nextTopicEl = document.getElementById("nextTopic");
+  const doneSectionEl = document.getElementById("doneSection");
+  const errEl = document.getElementById("err");
+  const backBtn = document.getElementById("back");
+  const restartBtn = document.getElementById("restart");
+
+  function fmtKm(m) {
+    return (m / 1000).toFixed(1).replace(".", ",");
+  }
+
+  function haversine(a, b) {
+    const R = 6371000;
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(b.lat - a.lat);
+    const dLon = toRad(b.lng - a.lng);
+    const lat1 = toRad(a.lat);
+    const lat2 = toRad(b.lat);
+    const s = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(s));
+  }
+
+  function clearError() {
+    errEl.textContent = "";
+  }
+
+  function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      doRestart();
+    }, 30000);
+  }
+
+  function clearHistoricCircle() {
+    if (state.historicCircle) {
+      map.removeLayer(state.historicCircle);
+      state.historicCircle = null;
+    }
+  }
+
+  function clearCurrentVisuals() {
+    if (state.currentLine) {
+      map.removeLayer(state.currentLine);
+      state.currentLine = null;
+    }
+    if (state.todayCircle) {
+      map.removeLayer(state.todayCircle);
+      state.todayCircle = null;
+    }
+    clearHistoricCircle();
+  }
+
+  function clearTapFlash() {
+    if (state.tapFlash) {
+      map.removeLayer(state.tapFlash);
+      state.tapFlash = null;
+    }
+  }
+
+  function flashTap(latlng) {
+    clearTapFlash();
+
+    state.tapFlash = L.circleMarker(latlng, {
+      radius: 10,
+      color: "#ffffff",
+      weight: 2,
+      fillColor: "#ffffff",
+      fillOpacity: 0.35,
+      className: "tap-flash"
+    }).addTo(map);
+
+    let radius = 10;
+    let opacity = 0.35;
+    let steps = 0;
+
+    const interval = setInterval(() => {
+      if (!state.tapFlash) {
+        clearInterval(interval);
+        return;
+      }
+
+      radius += 2.6;
+      opacity -= 0.045;
+      steps += 1;
+
+      state.tapFlash.setRadius(radius);
+      state.tapFlash.setStyle({
+        opacity: Math.max(opacity, 0),
+        fillOpacity: Math.max(opacity * 0.6, 0)
+      });
+
+      if (steps >= 10 || opacity <= 0) {
+        clearInterval(interval);
+        clearTapFlash();
+      }
+    }, 28);
+  }
+
+  function getCurrentTopic() {
+    return topics[state.currentTopicIndex] || null;
+  }
+
+  function updateProgress() {
+    progressEl.textContent = "";
+  }
+
+  function updatePrompt() {
+    const topic = getCurrentTopic();
+
+    if (state.mode === "pickHome") {
+      promptEl.textContent = "Wo wohnst du? KLICK";
+      compareSectionEl.classList.add("hidden");
+      doneSectionEl.classList.add("hidden");
+      metricMainEl.textContent = "— km";
+      metricSubEl.textContent = "";
+    } else if (state.mode === "pickTopic" && topic) {
+      promptEl.textContent = topic.ask + " KLICK";
+      compareSectionEl.classList.add("hidden");
+      doneSectionEl.classList.add("hidden");
+      metricMainEl.textContent = "— km";
+      metricSubEl.textContent = "";
+    } else if (state.mode === "compare" && topic) {
+      promptEl.textContent = topic.label;
+      compareSectionEl.classList.remove("hidden");
+      doneSectionEl.classList.add("hidden");
+      compareHeadlineEl.textContent = "Zeitvergleich: " + topic.label;
+      compareSubEl.textContent = "Wähle einen historischen Zeitschnitt.";
+      updateMetricForTopic(topic.key);
+    } else if (state.mode === "done") {
+      promptEl.textContent = "Fertig!";
+      compareSectionEl.classList.add("hidden");
+      doneSectionEl.classList.remove("hidden");
+      metricMainEl.textContent = "";
+      metricSubEl.textContent = "";
+    }
+
+    backBtn.disabled = (state.mode === "pickHome" && !state.home);
+  }
+
+  function updateMetricForTopic(topicKey) {
+    if (!state.home || !state.points[topicKey]) {
+      metricMainEl.textContent = "— km";
+      metricSubEl.textContent = "";
+      return;
+    }
+
+    const d = haversine(state.home, state.points[topicKey]);
+    metricMainEl.textContent = `${fmtKm(d)} km`;
+    metricSubEl.textContent = "";
+  }
+
+  function setActiveYearButton(year) {
+    document.querySelectorAll(".timeBtn").forEach(btn => {
+      const btnYear = btn.dataset.year;
+      const border = HIST_COLORS[btnYear] || "#666666";
+      const bg = HIST_BG[btnYear] || "rgba(80,80,80,0.50)";
+
+      btn.style.borderColor = border;
+      btn.style.background = bg;
+      btn.style.color = "#fff";
+      btn.style.outline = "none";
+
+      if (btnYear === year) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  }
+
+  function fitToRelevantBounds(extraLayer = null) {
+    const pts = [];
+
+    if (state.home) pts.push(L.latLng(state.home.lat, state.home.lng));
+
+    const topic = getCurrentTopic();
+    if (topic && state.points[topic.key]) {
+      pts.push(L.latLng(state.points[topic.key].lat, state.points[topic.key].lng));
+    }
+
+    if (extraLayer && extraLayer.getBounds) {
+      map.flyToBounds(extraLayer.getBounds(), {
+        padding: [70, 70],
+        duration: 0.8,
+        easeLinearity: 0.2
+      });
+      return;
+    }
+
+    if (pts.length >= 2) {
+      map.flyToBounds(L.latLngBounds(pts).pad(0.12), {
+        duration: 0.8,
+        easeLinearity: 0.2
+      });
+    } else if (state.home) {
+      map.flyTo([state.home.lat, state.home.lng], 14, { duration: 0.8 });
+    } else {
+      map.setView([WINSEN.lat, WINSEN.lng], 12);
+    }
+  }
+
+  function removeTopicMarker(topicKey) {
+    if (state.markers[topicKey]) {
+      map.removeLayer(state.markers[topicKey]);
+      state.markers[topicKey] = null;
+    }
+  }
+
+  function drawTodayAlways() {
+    const topic = getCurrentTopic();
+    if (!topic || !state.home || !state.points[topic.key]) return null;
+
+    if (state.currentLine) map.removeLayer(state.currentLine);
+    if (state.todayCircle) map.removeLayer(state.todayCircle);
+
+    const start = state.home;
+    const dest = state.points[topic.key];
+    const d = haversine(start, dest);
+
+    state.currentLine = L.polyline(
+      [[start.lat, start.lng], [dest.lat, dest.lng]],
+      {
+        weight: 6,
+        opacity: 1,
+        color: USER_LINE_COLOR
+      }
+    ).addTo(map);
+
+    state.todayCircle = L.circle([start.lat, start.lng], {
+      radius: d,
+      weight: 5,
+      color: USER_CIRCLE_COLOR,
+      fillColor: USER_CIRCLE_COLOR,
+      fillOpacity: 0.16
+    }).addTo(map);
+
+    metricMainEl.textContent = `${fmtKm(d)} km`;
+    return state.todayCircle;
+  }
+
+  function showComparison(year = null) {
+    const topic = getCurrentTopic();
+    if (!topic || !state.home || !state.points[topic.key]) return;
+
+    state.activeYear = year;
+    setActiveYearButton(year);
+    clearHistoricCircle();
+
+    const todayLayer = drawTodayAlways();
+
+    if (!year) {
+      infoTextEl.textContent = "Hier Infos zum heutigen Radius...";
+      if (todayLayer) fitToRelevantBounds(todayLayer);
+      return;
+    }
+
+    const km = historicRadiusKm[topic.key][year];
+    const meter = km * 1000;
+    const color = HIST_COLORS[year] || "#cc3333";
+
+    state.historicCircle = L.circle([state.home.lat, state.home.lng], {
+      radius: meter,
+      weight: 4,
+      color: color,
+      fillColor: color,
+      fillOpacity: 0.06
+    }).addTo(map);
+
+    infoTextEl.textContent = `Hier Infos zum Radius des Jahres ${year}...`;
+    fitToRelevantBounds(state.historicCircle);
+  }
+
+  function clearCurrentTopicFromMapOnly() {
+    const topic = getCurrentTopic();
+    if (!topic) return;
+
+    removeTopicMarker(topic.key);
+    clearCurrentVisuals();
+  }
+
+  function redrawCurrentTopicMarkerIfNeeded() {
+    const topic = getCurrentTopic();
+    if (!topic || !state.points[topic.key]) return;
+
+    if (!state.markers[topic.key]) {
+      state.markers[topic.key] = L.marker(
+        [state.points[topic.key].lat, state.points[topic.key].lng],
+        { icon: greyIcon }
+      ).addTo(map);
+    }
+  }
+
+  function goToNextTopic() {
+    clearCurrentTopicFromMapOnly();
+
+    if (state.currentTopicIndex < topics.length - 1) {
+      state.currentTopicIndex += 1;
+      state.mode = "pickTopic";
+      updateProgress();
+      updatePrompt();
+      fitToRelevantBounds();
+    } else {
+      state.mode = "done";
+      updateProgress();
+      updatePrompt();
+      fitToRelevantBounds();
+    }
+  }
+
+  function doRestart() {
+    clearTimeout(inactivityTimer);
+    clearTapFlash();
+
+    for (const key of Object.keys(state.markers)) {
+      if (state.markers[key]) map.removeLayer(state.markers[key]);
+    }
+
+    state.home = null;
+    state.points = { work: null, daily: null, hobby: null, shop: null };
+    state.markers = { home: null, work: null, daily: null, hobby: null, shop: null };
+    clearCurrentVisuals();
+    state.currentTopicIndex = -1;
+    state.mode = "pickHome";
+    state.activeYear = null;
+
+    setActiveYearButton(null);
+    clearError();
+    updateProgress();
+    updatePrompt();
+    map.setView([WINSEN.lat, WINSEN.lng], 12);
+
+    resetInactivityTimer();
+  }
+
+  function handleMapClick(e) {
+    clearError();
+    resetInactivityTimer();
+    flashTap(e.latlng);
+
+    if (state.mode === "pickHome") {
+      state.home = { lat: e.latlng.lat, lng: e.latlng.lng };
+
+      if (state.markers.home) map.removeLayer(state.markers.home);
+      state.markers.home = L.marker(e.latlng, { icon: greyIcon }).addTo(map);
+
+      state.currentTopicIndex = 0;
+      state.mode = "pickTopic";
+      updateProgress();
+      updatePrompt();
+
+      map.flyTo([state.home.lat, state.home.lng], 14, { duration: 0.8 });
+      return;
+    }
+
+    if (state.mode === "pickTopic") {
+      const topic = getCurrentTopic();
+      if (!topic) return;
+
+      state.points[topic.key] = { lat: e.latlng.lat, lng: e.latlng.lng };
+
+      removeTopicMarker(topic.key);
+      state.markers[topic.key] = L.marker(e.latlng, { icon: greyIcon }).addTo(map);
+
+      state.mode = "compare";
+      state.activeYear = null;
+      updateProgress();
+      updatePrompt();
+      showComparison(null);
+    }
+  }
+
+  map.on("click", handleMapClick);
+
+  document.querySelectorAll(".timeBtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (state.mode !== "compare") return;
+      resetInactivityTimer();
+      showComparison(btn.dataset.year);
+    });
+  });
+
+  nextTopicEl.addEventListener("click", () => {
+    if (state.mode !== "compare") return;
+    resetInactivityTimer();
+    goToNextTopic();
+  });
+
+  backBtn.addEventListener("click", () => {
+    clearError();
+    resetInactivityTimer();
+
+    if (state.mode === "pickHome") {
+      if (!state.home) return;
+
+      if (state.markers.home) {
+        map.removeLayer(state.markers.home);
+        state.markers.home = null;
+      }
+
+      state.home = null;
+      state.points = { work: null, daily: null, hobby: null, shop: null };
+      for (const key of ["work", "daily", "hobby", "shop"]) {
+        removeTopicMarker(key);
+      }
+
+      clearCurrentVisuals();
+      clearTapFlash();
+
+      state.currentTopicIndex = -1;
+      state.mode = "pickHome";
+      updateProgress();
+      updatePrompt();
+      map.setView([WINSEN.lat, WINSEN.lng], 12);
+      return;
+    }
+
+    if (state.mode === "pickTopic") {
+      const topic = getCurrentTopic();
+
+      if (topic && state.points[topic.key]) {
+        state.points[topic.key] = null;
+        removeTopicMarker(topic.key);
+        clearCurrentVisuals();
+        updatePrompt();
+        fitToRelevantBounds();
+        return;
+      }
+
+      if (state.currentTopicIndex === 0) {
+        state.mode = "pickHome";
+        state.currentTopicIndex = -1;
+      } else {
+        state.currentTopicIndex -= 1;
+        state.mode = "compare";
+        redrawCurrentTopicMarkerIfNeeded();
+        updateProgress();
+        updatePrompt();
+        showComparison(state.activeYear);
+        return;
+      }
+
+      updateProgress();
+      updatePrompt();
+      fitToRelevantBounds();
+      return;
+    }
+
+    if (state.mode === "compare") {
+      const topic = getCurrentTopic();
+      if (!topic) return;
+
+      clearCurrentVisuals();
+      state.points[topic.key] = null;
+      removeTopicMarker(topic.key);
+
+      state.mode = "pickTopic";
+      state.activeYear = null;
+      updateProgress();
+      updatePrompt();
+      fitToRelevantBounds();
+      return;
+    }
+
+    if (state.mode === "done") {
+      state.currentTopicIndex = topics.length - 1;
+      state.mode = "compare";
+      redrawCurrentTopicMarkerIfNeeded();
+      updateProgress();
+      updatePrompt();
+      showComparison(null);
+    }
+  });
+
+  restartBtn.addEventListener("click", () => {
+    doRestart();
+  });
+
+  setActiveYearButton(null);
+  updateProgress();
+  updatePrompt();
+  resetInactivityTimer();
+</script>
+</body>
+</html>
