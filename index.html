@@ -79,14 +79,6 @@
       min-height: 14px;
     }
 
-    .metric {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      letter-spacing: 0.1px;
-      min-height: 20px;
-    }
-
     .buttonRow {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -152,6 +144,13 @@
     .tap-flash {
       pointer-events: none;
     }
+
+    .infoTextLarge {
+      font-size: 20px;
+      line-height: 1.5;
+      color: #fff;
+      font-weight: 400;
+    }
   </style>
 </head>
 <body>
@@ -169,11 +168,6 @@
       </div>
     </div>
 
-    <div class="box">
-      <div class="metric" id="metricMain">— km</div>
-      <div class="small" id="metricSub"></div>
-    </div>
-
     <div id="compareSection" class="box hidden">
       <div class="wizardQ" id="compareHeadline">Zeitvergleich</div>
       <div class="small" id="compareSub">Wähle einen historischen Zeitschnitt.</div>
@@ -186,7 +180,7 @@
       </div>
 
       <div class="box" style="margin-top:10px;">
-        <div class="small" id="infoText">Hier Infos zum heutigen Radius...</div>
+        <div class="infoTextLarge" id="infoText">Hier Infos zum heutigen Radius...</div>
       </div>
 
       <button class="primary" id="nextTopic" style="margin-top:10px;">Weiter zum nächsten Thema</button>
@@ -226,10 +220,10 @@
   });
 
   const topics = [
-    { key: "work",  label: "Arbeit / Schule", ask: "Wo arbeitest Du/gehst Du zur Schule?" },
-    { key: "daily", label: "Täglicher Bedarf", ask: "Wo kaufst Du Deinen täglichen Bedarf ein?" },
-    { key: "hobby", label: "Hobby", ask: "Wo gehst Du deinem Hobby nach?" },
-    { key: "shop",  label: "Shopping", ask: "Wo shoppst Du gerne?" }
+    { key: "work",  label: "Arbeit / Schule", ask: "Wo arbeitest du / gehst du zur Schule?" },
+    { key: "daily", label: "Täglicher Bedarf", ask: "Wo kaufst du deinen täglichen Bedarf ein?" },
+    { key: "hobby", label: "Hobby", ask: "Wo gehst du deinem Hobby nach?" },
+    { key: "shop",  label: "Shopping", ask: "Wo shoppst du gerne?" }
   ];
 
   const historicRadiusKm = {
@@ -285,8 +279,6 @@
 
   const promptEl = document.getElementById("prompt");
   const progressEl = document.getElementById("progress");
-  const metricMainEl = document.getElementById("metricMain");
-  const metricSubEl = document.getElementById("metricSub");
   const compareSectionEl = document.getElementById("compareSection");
   const compareHeadlineEl = document.getElementById("compareHeadline");
   const compareSubEl = document.getElementById("compareSub");
@@ -296,10 +288,6 @@
   const errEl = document.getElementById("err");
   const backBtn = document.getElementById("back");
   const restartBtn = document.getElementById("restart");
-
-  function fmtKm(m) {
-    return (m / 1000).toFixed(1).replace(".", ",");
-  }
 
   function haversine(a, b) {
     const R = 6371000;
@@ -403,42 +391,23 @@
       promptEl.textContent = "Wo wohnst du? KLICK";
       compareSectionEl.classList.add("hidden");
       doneSectionEl.classList.add("hidden");
-      metricMainEl.textContent = "— km";
-      metricSubEl.textContent = "";
     } else if (state.mode === "pickTopic" && topic) {
       promptEl.textContent = topic.ask + " KLICK";
       compareSectionEl.classList.add("hidden");
       doneSectionEl.classList.add("hidden");
-      metricMainEl.textContent = "— km";
-      metricSubEl.textContent = "";
     } else if (state.mode === "compare" && topic) {
       promptEl.textContent = topic.label;
       compareSectionEl.classList.remove("hidden");
       doneSectionEl.classList.add("hidden");
       compareHeadlineEl.textContent = "Zeitvergleich: " + topic.label;
       compareSubEl.textContent = "Wähle einen historischen Zeitschnitt.";
-      updateMetricForTopic(topic.key);
     } else if (state.mode === "done") {
       promptEl.textContent = "Fertig!";
       compareSectionEl.classList.add("hidden");
       doneSectionEl.classList.remove("hidden");
-      metricMainEl.textContent = "";
-      metricSubEl.textContent = "";
     }
 
     backBtn.disabled = (state.mode === "pickHome" && !state.home);
-  }
-
-  function updateMetricForTopic(topicKey) {
-    if (!state.home || !state.points[topicKey]) {
-      metricMainEl.textContent = "— km";
-      metricSubEl.textContent = "";
-      return;
-    }
-
-    const d = haversine(state.home, state.points[topicKey]);
-    metricMainEl.textContent = `${fmtKm(d)} km`;
-    metricSubEl.textContent = "";
   }
 
   function setActiveYearButton(year) {
@@ -526,7 +495,6 @@
       fillOpacity: 0.16
     }).addTo(map);
 
-    metricMainEl.textContent = `${fmtKm(d)} km`;
     return state.todayCircle;
   }
 
