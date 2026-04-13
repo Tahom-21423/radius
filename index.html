@@ -35,6 +35,13 @@
       box-sizing: border-box;
     }
 
+    #panelInner {
+      min-height: 100%;
+      box-sizing: border-box;
+      padding-top: 90px;
+      padding-bottom: 90px;
+    }
+
     #map {
       height: 100%;
       width: 100%;
@@ -153,7 +160,6 @@
       font-weight: 400;
     }
 
-    /* Overlay über dem Panel */
     #infoOverlay {
       position: absolute;
       inset: 0;
@@ -213,48 +219,50 @@
 <body>
 <div id="app">
   <div id="panel">
-    <h2>Vergleiche Deinen Mobilitätsradius mit früher!</h2>
+    <div id="panelInner">
+      <h2>Vergleiche Deinen Mobilitätsradius mit früher!</h2>
 
-    <div class="box">
-      <div class="wizardQ" id="prompt">Wo wohnst du? KLICK</div>
-      <div class="wizardSub" id="progress"></div>
+      <div class="box">
+        <div class="wizardQ" id="prompt">Wo wohnst du? KLICK</div>
+        <div class="wizardSub" id="progress"></div>
 
-      <div class="buttonRow">
-        <button id="back">Zurück</button>
-        <button class="primary" id="restart">Neu starten</button>
-      </div>
-    </div>
-
-    <div id="compareSection" class="box hidden">
-      <div class="wizardQ" id="compareHeadline">Zeitvergleich</div>
-      <div class="small" id="compareSub">Wähle einen historischen Zeitschnitt.</div>
-
-      <div class="timeGrid">
-        <button class="timeBtn" data-year="1590">1590</button>
-        <button class="timeBtn" data-year="1790">1790</button>
-        <button class="timeBtn" data-year="1890">1890</button>
-        <button class="timeBtn" data-year="1950">1950</button>
+        <div class="buttonRow">
+          <button id="back">Zurück</button>
+          <button class="primary" id="restart">Neu starten</button>
+        </div>
       </div>
 
-      <div class="box" style="margin-top:10px;">
-        <div class="infoTextLarge" id="infoText">Tippe auf ein Jahr für weitere Infos.</div>
+      <div id="compareSection" class="box hidden">
+        <div class="wizardQ" id="compareHeadline">Zeitvergleich</div>
+        <div class="small" id="compareSub">Wähle einen historischen Zeitschnitt.</div>
+
+        <div class="timeGrid">
+          <button class="timeBtn" data-year="1590">1590</button>
+          <button class="timeBtn" data-year="1790">1790</button>
+          <button class="timeBtn" data-year="1890">1890</button>
+          <button class="timeBtn" data-year="1950">1950</button>
+        </div>
+
+        <div class="box" style="margin-top:10px;">
+          <div class="infoTextLarge" id="infoText">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+        </div>
+
+        <button class="primary" id="nextTopic" style="margin-top:10px;">Weiter zum nächsten Thema</button>
       </div>
 
-      <button class="primary" id="nextTopic" style="margin-top:10px;">Weiter zum nächsten Thema</button>
-    </div>
+      <div id="doneSection" class="box hidden">
+        <div class="wizardQ">Fertig!</div>
+        <div class="small">Alle Themen wurden durchlaufen. Du kannst neu starten oder links oben mit „Zurück“ den letzten Schritt korrigieren.</div>
+      </div>
 
-    <div id="doneSection" class="box hidden">
-      <div class="wizardQ">Fertig!</div>
-      <div class="small">Alle Themen wurden durchlaufen. Du kannst neu starten oder links oben mit „Zurück“ den letzten Schritt korrigieren.</div>
-    </div>
+      <div class="warn" id="err"></div>
 
-    <div class="warn" id="err"></div>
-
-    <div id="infoOverlay" class="hidden">
-      <div id="infoOverlayBox">
-        <button id="closeOverlay" aria-label="Fenster schließen">×</button>
-        <div id="overlayTitle">1590</div>
-        <div id="overlayText">Hier Infos zum Radius des Jahres 1590...</div>
+      <div id="infoOverlay" class="hidden">
+        <div id="infoOverlayBox">
+          <button id="closeOverlay" aria-label="Fenster schließen">×</button>
+          <div id="overlayTitle">1590</div>
+          <div id="overlayText">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -298,33 +306,33 @@
     shop:  { 1590: 0.5, 1790: 2,   1890: 10, 1950: 30 }
   };
 
-const historicInfoText = {
-  work: {
-    1590: "Lorem ipsum",
-    1790: "Lorem ipsum",
-    1890: "Lorem ipsum",
-    1950: "Lorem ipsum"
-  },
-  daily: {
-    1590: "Lorem ipsum",
-    1790: "Lorem ipsum",
-    1890: "Lorem ipsum",
-    1950: "Lorem ipsum"
-  },
-  hobby: {
-    1590: "Lorem ipsum",
-    1790: "Lorem ipsum",
-    1890: "Lorem ipsum",
-    1950: "Lorem ipsum"
-  },
-  shop: {
-    1590: "Lorem ipsum",
-    1790: "Lorem ipsum",
-    1890: "Lorem ipsum",
-    1950: "Lorem ipsum"
-  }
-};
-  
+  const historicInfoText = {
+    work: {
+      1590: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1790: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1890: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1950: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    daily: {
+      1590: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1790: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1890: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1950: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    hobby: {
+      1590: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1790: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1890: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1950: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    shop: {
+      1590: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1790: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1890: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      1950: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    }
+  };
+
   const state = {
     home: null,
     points: {
@@ -414,7 +422,7 @@ const historicInfoText = {
 
     overlayTitleEl.textContent = year;
     overlayTextEl.textContent =
-      historicInfoText[topic.key]?.[year] || `Hier Infos zum Radius des Jahres ${year}...`;
+      historicInfoText[topic.key]?.[year] || "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
     infoOverlayEl.classList.remove("hidden");
   }
@@ -621,7 +629,7 @@ const historicInfoText = {
     const todayLayer = drawTodayAlways();
 
     if (!year) {
-      infoTextEl.textContent = "Tippe auf ein Jahr für weitere Infos.";
+      infoTextEl.textContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
       if (todayLayer) fitToRelevantBounds(todayLayer);
       return;
     }
@@ -638,7 +646,7 @@ const historicInfoText = {
       fillOpacity: 0.06
     }).addTo(map);
 
-    infoTextEl.textContent = "Tippe auf das X, um wieder zum Menü zu kommen.";
+    infoTextEl.textContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
     fitToRelevantBounds(state.historicCircle);
     openOverlay(year);
   }
