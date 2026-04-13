@@ -156,19 +156,6 @@
       pointer-events: none;
     }
 
-    .infoTextWrap {
-      margin-top: 14px;
-      padding: 10px 12px;
-      border-radius: 12px;
-    }
-
-    .infoTextLarge {
-      font-size: 16px;
-      line-height: 1.4;
-      color: #fff;
-      font-weight: 400;
-    }
-
     /* Overlay */
     #infoOverlay {
       position: absolute;
@@ -249,10 +236,6 @@
           <button class="timeBtn" data-year="1792">1792</button>
           <button class="timeBtn" data-year="1890">1890</button>
           <button class="timeBtn" data-year="1964">1964</button>
-        </div>
-
-        <div class="box infoTextWrap">
-          <div class="infoTextLarge" id="infoText">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
         </div>
 
         <button class="primary" id="nextTopic" style="margin-top:14px;">Weiter zum nächsten Thema</button>
@@ -384,7 +367,6 @@
   const compareSectionEl = document.getElementById("compareSection");
   const compareHeadlineEl = document.getElementById("compareHeadline");
   const compareSubEl = document.getElementById("compareSub");
-  const infoTextEl = document.getElementById("infoText");
   const nextTopicEl = document.getElementById("nextTopic");
   const doneSectionEl = document.getElementById("doneSection");
   const errEl = document.getElementById("err");
@@ -424,7 +406,7 @@
 
     overlayTitleEl.textContent = year;
     overlayTextEl.textContent =
-      historicInfoText[topic.key]?.[year] || "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+      historicInfoText[topic.key]?.[year] || "";
 
     infoOverlayEl.classList.remove("hidden");
   }
@@ -631,7 +613,6 @@
     const todayLayer = drawTodayAlways();
 
     if (!year) {
-      infoTextEl.textContent = "";
       if (todayLayer) fitToRelevantBounds(todayLayer);
       return;
     }
@@ -648,7 +629,6 @@
       fillOpacity: 0.06
     }).addTo(map);
 
-    infoTextEl.textContent = historicInfoText[topic.key]?.[year] || "";
     fitToRelevantBounds(state.historicCircle);
     openOverlay(year);
   }
