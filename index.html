@@ -36,14 +36,14 @@
       color: #fff;
       border-right: 1px solid #222;
       overflow: auto;
-      padding: 0 14px;
+      padding: 0 12px;
     }
 
-#panelInner {
-  min-height: 100%;
-  padding-top: 90px;
-  padding-bottom: 90px;
-}
+    #panelInner {
+      min-height: 100%;
+      padding-top: 72px;
+      padding-bottom: 72px;
+    }
 
     #map {
       height: 100%;
@@ -51,64 +51,64 @@
     }
 
     h2 {
-      margin: 0 0 18px 0;
-      font-size: 20px;
+      margin: 0 0 14px 0;
+      font-size: 16px;
       line-height: 1.15;
       font-weight: 900;
       letter-spacing: 0.1px;
     }
 
     .small {
-      font-size: 18px;
+      font-size: 13px;
       color: #c5c5c5;
-      line-height: 1.45;
+      line-height: 1.35;
       font-weight: 400;
     }
 
     .box {
       background: #111;
       border: 1px solid #333;
-      border-radius: 18px;
-      padding: 18px;
-      margin-top: 18px;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
     }
 
     .wizardQ {
-      font-size: 30px;
+      font-size: 22px;
       font-weight: 900;
       line-height: 1.2;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       letter-spacing: 0.1px;
     }
 
     .wizardSub {
-      font-size: 17px;
+      font-size: 13px;
       color: #c5c5c5;
-      margin-top: 8px;
-      line-height: 1.4;
+      margin-top: 4px;
+      line-height: 1.3;
       font-weight: 400;
-      min-height: 22px;
+      min-height: 18px;
     }
 
     .buttonRow {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     .timeGrid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     button {
       width: 100%;
-      min-height: 70px;
-      padding: 16px 14px;
-      font-size: 20px;
+      min-height: 56px;
+      padding: 12px 10px;
+      font-size: 16px;
       font-family: 'Roboto', Arial, sans-serif;
       font-weight: 700;
       letter-spacing: 0.1px;
@@ -141,11 +141,11 @@
 
     .warn {
       color: #ff998a;
-      margin-top: 14px;
-      min-height: 1.4em;
+      margin-top: 12px;
+      min-height: 1.3em;
       font-weight: 400;
-      font-size: 17px;
-      line-height: 1.4;
+      font-size: 13px;
+      line-height: 1.3;
     }
 
     .grey-marker {
@@ -157,12 +157,14 @@
     }
 
     .infoTextWrap {
-      margin-top: 26px;
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
     }
 
     .infoTextLarge {
-      font-size: 24px;
-      line-height: 1.6;
+      font-size: 16px;
+      line-height: 1.4;
       color: #fff;
       font-weight: 400;
     }
@@ -173,7 +175,7 @@
       inset: 0;
       z-index: 50;
       background: rgba(0, 0, 0, 0.95);
-      padding: 22px;
+      padding: 18px;
       overflow: auto;
       display: flex;
       align-items: flex-start;
@@ -184,23 +186,23 @@
       width: 100%;
       background: #111;
       border: 1px solid #444;
-      border-radius: 22px;
-      padding: 28px 22px 24px 22px;
+      border-radius: 18px;
+      padding: 22px 18px 20px 18px;
       position: relative;
-      min-height: calc(100vh - 44px);
+      min-height: calc(100vh - 36px);
     }
 
     #closeOverlay {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 68px;
-      height: 68px;
-      border-radius: 16px;
+      top: 10px;
+      right: 10px;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
       border: 1px solid #666;
       background: #222;
       color: #fff;
-      font-size: 40px;
+      font-size: 32px;
       line-height: 1;
       font-weight: 700;
       padding: 0;
@@ -208,16 +210,16 @@
     }
 
     #overlayTitle {
-      font-size: 40px;
+      font-size: 30px;
       font-weight: 900;
       line-height: 1.2;
-      margin-bottom: 22px;
-      padding-right: 82px;
+      margin-bottom: 16px;
+      padding-right: 68px;
     }
 
     #overlayText {
-      font-size: 24px;
-      line-height: 1.6;
+      font-size: 18px;
+      line-height: 1.5;
       color: #fff;
       font-weight: 400;
     }
@@ -241,20 +243,19 @@
 
       <div id="compareSection" class="box hidden">
         <div class="wizardQ" id="compareHeadline">Zeitvergleich</div>
-        <div class="small" id="compareSub">Wähle einen historischen Zeitschnitt.</div>
+        <div class="small hidden" id="compareSub"></div>
 
         <div class="timeGrid">
-          <button class="timeBtn" data-year="1590">1590</button>
-          <button class="timeBtn" data-year="1790">1790</button>
+          <button class="timeBtn" data-year="1792">1792</button>
           <button class="timeBtn" data-year="1890">1890</button>
-          <button class="timeBtn" data-year="1950">1950</button>
+          <button class="timeBtn" data-year="1964">1964</button>
         </div>
 
         <div class="box infoTextWrap">
           <div class="infoTextLarge" id="infoText">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
         </div>
 
-        <button class="primary" id="nextTopic" style="margin-top:18px;">Weiter zum nächsten Thema</button>
+        <button class="primary" id="nextTopic" style="margin-top:14px;">Weiter zum nächsten Thema</button>
       </div>
 
       <div id="doneSection" class="box hidden">
@@ -267,7 +268,7 @@
       <div id="infoOverlay" class="hidden">
         <div id="infoOverlayBox">
           <button id="closeOverlay" aria-label="Fenster schließen">×</button>
-          <div id="overlayTitle">1590</div>
+          <div id="overlayTitle">1792</div>
           <div id="overlayText">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
         </div>
       </div>
@@ -307,36 +308,32 @@
   ];
 
   const historicRadiusKm = {
-    work:  { 1590: 2,   1790: 1,   1890: 2.5, 1950: 25 },
-    daily: { 1590: 0.5, 1790: 1, 1890: 1,  1950: 3 },
-    hobby: { 1590: 1,   1790: 1,   1890: 21,  1950: 25 },
-    shop:  { 1590: 0.5, 1790: 1,   1890: 25, 1950: 25 }
+    work:  { 1792: 1,   1890: 2.5, 1964: 25 },
+    daily: { 1792: 1,   1890: 1,   1964: 3 },
+    hobby: { 1792: 1,   1890: 21,  1964: 25 },
+    shop:  { 1792: 1,   1890: 25,  1964: 25 }
   };
 
   const historicInfoText = {
     work: {
-      1590: "Die Winsener Bürger lebten vorwiegend von Handwerk und Handel. Viele hatten ein kleines Stückchen Gartenland und ein Vieh, die versorgt werden mussten. Fast alle wohnten dort, wo sie auch arbeiteten.",
-      1790: "Ähnlich wie 200 Jahre zuvor lebten und arbeiteten die Menschen in der Stadt.",
+      1792: "Ähnlich wie 200 Jahre zuvor lebten und arbeiteten die Menschen in der Stadt.",
       1890: "1890 hatte sich die Stadt nach Süden zum Bahnhof erweitert. Dort gab es erste Fabriken, in denen die Menschen arbeiteten. Die meisten Menschen arbeiteten weiterhin an ihrem Wohnort.",
-      1950: "In den 1960er Jahren arbeiteten noch viele Menschen an ihrem Wohnort Winsen, gleichwohl pendelten manache nach Hamburg oder Lüneburg mit dem Zug."
+      1964: "In den 1960er Jahren arbeiteten noch viele Menschen an ihrem Wohnort Winsen, gleichwohl pendelten manache nach Hamburg oder Lüneburg mit dem Zug."
     },
     daily: {
-      1590: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      1790: "Ihren täglichen Bedarf kauften die Menschen in den verschiedenen Geschäften ein oder auf dem Markt, der sich an der Marktstraße zwischen Hafen und Kirche befand. Ein wenig wurde auch selbst produziert.",
+      1792: "Ihren täglichen Bedarf kauften die Menschen in den verschiedenen Geschäften ein oder auf dem Markt, der sich an der Marktstraße zwischen Hafen und Kirche befand. Ein wenig wurde auch selbst produziert.",
       1890: "Für den täglichen Bedarf bot Winsen unzählige Geschäfte. Auch die Bauern aus dem Umland lieferten ihre Produkte auf den Markt.",
-      1950: "Weiterhin bietet die Innenstadt alles für den täglichen Bedarf. Die Lebensmittelläden gingen mit der Zeit und vergrößerten ihr Angebot."
+      1964: "Weiterhin bietet die Innenstadt alles für den täglichen Bedarf. Die Lebensmittelläden gingen mit der Zeit und vergrößerten ihr Angebot."
     },
     hobby: {
-      1590: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      1790: "Die Kinder spielten gerne mit Drachen, Reifen oder Steckenpferd. Wer von den Erwachsenen Freizeit hatte, beschäftigte sich zuhause.",
+      1792: "Die Kinder spielten gerne mit Drachen, Reifen oder Steckenpferd. Wer von den Erwachsenen Freizeit hatte, beschäftigte sich zuhause.",
       1890: "Zu den Freizeitbeschäftigungen zuhause traten auch Ausflüge in die nähere Region, vor allem an der Elbe entlang oder in die umliegenden Dörfer.",
-      1950: "In den 1960er Jahren sind Ausflüge mit Zug oder Auto modern. Viele Freizeitbeschäftigungen finden aber vor Ort statt."
+      1964: "In den 1960er Jahren sind Ausflüge mit Zug oder Auto modern. Viele Freizeitbeschäftigungen finden aber vor Ort statt."
     },
     shop: {
-      1590: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      1790: "Dinge des nichttäglichen Bedarfs wie Kleidung, Schmuck oder Bücher konnten in Winsen in verschiedenen Geschäften eingekauft werden.",
+      1792: "Dinge des nichttäglichen Bedarfs wie Kleidung, Schmuck oder Bücher konnten in Winsen in verschiedenen Geschäften eingekauft werden.",
       1890: "Für besondere Dinge des nichttäglichen Bedarfs wie beispielsweise modischer Kleidung oder Uhren wurde in Hamburg oder Harburg eingekauft. Durch die Eisenbahn war auch Lüneburg gut angebunden.",
-      1950: "Schnelle Verbindungen mit der Eisenbahn und dem Auto brachten die Menschen schnell in die umliegenden größeren Städte. Auch das Auto spielte verstärkt eine Rolle. In Winsen gab es weiterhin ein vielseitiges Angebot."
+      1964: "Schnelle Verbindungen mit der Eisenbahn und dem Auto brachten die Menschen schnell in die umliegenden größeren Städte. Auch das Auto spielte verstärkt eine Rolle. In Winsen gab es weiterhin ein vielseitiges Angebot."
     }
   };
 
@@ -371,17 +368,15 @@
   const USER_CIRCLE_COLOR = TODAY_COLOR;
 
   const HIST_COLORS = {
-    "1590": "#8c4b2d",
-    "1790": "#c03d3d",
+    "1792": "#c03d3d",
     "1890": "#6b3fc9",
-    "1950": "#0b5d1e"
+    "1964": "#0b5d1e"
   };
 
   const HIST_BG = {
-    "1590": "rgba(140, 75, 45, 0.50)",
-    "1790": "rgba(192, 61, 61, 0.50)",
+    "1792": "rgba(192, 61, 61, 0.50)",
     "1890": "rgba(107, 63, 201, 0.50)",
-    "1950": "rgba(11, 93, 30, 0.50)"
+    "1964": "rgba(11, 93, 30, 0.50)"
   };
 
   const promptEl = document.getElementById("prompt");
@@ -527,7 +522,7 @@
       compareSectionEl.classList.remove("hidden");
       doneSectionEl.classList.add("hidden");
       compareHeadlineEl.textContent = "Zeitvergleich: " + topic.label;
-      compareSubEl.textContent = "Wähle einen historischen Zeitschnitt.";
+      compareSubEl.textContent = "";
     } else if (state.mode === "done") {
       promptEl.textContent = "Fertig!";
       compareSectionEl.classList.add("hidden");
@@ -636,7 +631,7 @@
     const todayLayer = drawTodayAlways();
 
     if (!year) {
-      infoTextEl.textContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+      infoTextEl.textContent = "";
       if (todayLayer) fitToRelevantBounds(todayLayer);
       return;
     }
@@ -653,7 +648,7 @@
       fillOpacity: 0.06
     }).addTo(map);
 
-    infoTextEl.textContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+    infoTextEl.textContent = historicInfoText[topic.key]?.[year] || "";
     fitToRelevantBounds(state.historicCircle);
     openOverlay(year);
   }
